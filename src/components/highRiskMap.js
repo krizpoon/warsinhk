@@ -129,7 +129,10 @@ class HighRiskMap extends Component {
       action: "click_marker",
       label: `${highRiskLocation.sub_district_zh} | ${highRiskLocation.location_zh}`,
     })
-    if (!this.state.activeDataPoint || this.state.activeDataPoint.id !== id) {
+    const activeId = this.state.activeDataPoint && this.state.activeDataPoint.id
+    const activeMarker = activeId && this.markersById[activeId]
+    const popupIsOpen = activeMarker && activeMarker.isPopupOpen()
+    if (!popupIsOpen || !activeId || activeId !== id) {
       this.setState(
         {
           activeDataPoint: highRiskLocation,
@@ -142,7 +145,7 @@ class HighRiskMap extends Component {
                 [highRiskLocation.lat, highRiskLocation.lng],
               ],
               {
-                maxZoom: 15,
+                maxZoom: Math.max(this.map.getZoom(), 15),
                 paddingTopLeft: [0, 60],
                 duration: 1.5,
               }
